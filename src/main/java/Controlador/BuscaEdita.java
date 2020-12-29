@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import javax.swing.JOptionPane;
  * @author james
  */
 @WebServlet(name = "BuscaInfo", urlPatterns = {"/BuscaInfo"})
+@MultipartConfig(maxFileSize = 991772151)    // upload file's size up to 16MB
 public class BuscaEdita extends HttpServlet {
 
     GestorCrearUsuarioDB gestorBD = new GestorCrearUsuarioDB();
@@ -36,7 +38,7 @@ public class BuscaEdita extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
 
             String identidad = request.getParameter("identidad");
             String parametro = request.getParameter("parametro");
@@ -143,6 +145,7 @@ public class BuscaEdita extends HttpServlet {
         String sexo = request.getParameter("sexo");
         String password = request.getParameter("password");
         String tipoI = request.getParameter("tipoI");
+        String num = request.getParameter("num");
         Cajero cajero;
 
         if (tipoI.equalsIgnoreCase("CAJERO")) {
@@ -159,18 +162,47 @@ public class BuscaEdita extends HttpServlet {
                 request.setAttribute("ERROR", "NO SE PUDO ACTUALIZAR LA INFORMACION");
             }
         } else if (tipoI.equalsIgnoreCase("CLIENTE")) {
-            String cumple = request.getParameter("cumple");
+            String a = request.getParameter("aaa");
             InputStream inputStream = null;
+            if (a.equalsIgnoreCase("si")) {
+                Part filePart;
+                try {
+
+                    filePart = request.getPart("pdf" + num);
+                    inputStream = filePart.getInputStream();
+                } catch (Exception e) {
+
+                }
+            }
+
+            String cumple = request.getParameter("cumple");
 
             GestorActualizarUsuario gestorBD = new GestorActualizarUsuario();
             java.time.LocalDate today = java.time.LocalDate.now();
+            
+            if(a.equalsIgnoreCase("si")){
+                
+                if (gestorBD.Actualizar_ClienteC(usuario, nombre, cumple, dpi, direccion, sexo, password, inputStream)) {
+                gestorBD.Actualizar_Usuario(usuario, password);
+                gestorBD.agregarHistorial(usuario, nombre, "", cumple, dpi, direccion, sexo, today.toString(), USERG);
+                request.setAttribute("ESTADO", "AGREGADO");
+            } else {
+                request.setAttribute("ESTADO", "ERROR");
+            }
+                
+                
+            } else if (a.equalsIgnoreCase("no")){
+                
+            
+            
             if (gestorBD.Actualizar_Cliente(usuario, nombre, cumple, dpi, direccion, sexo, password, inputStream)) {
                 gestorBD.Actualizar_Usuario(usuario, password);
                 gestorBD.agregarHistorial(usuario, nombre, "", cumple, dpi, direccion, sexo, today.toString(), USERG);
-
+                request.setAttribute("ESTADO", "AGREGADO");
             } else {
-                request.setAttribute("ERROR", "NO SE PUDO ACTUALIZAR LA INFORMACION");
+                request.setAttribute("ESTADO", "ERROR");
             }
+        }
         }
 
     }

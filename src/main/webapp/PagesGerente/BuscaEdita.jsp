@@ -3,8 +3,8 @@
     Created on : Nov 8, 2020, 8:49:22 PM
     Author     : james
 --%>
-<%@page import="Objetos.Cliente"%>
-<%@page import="Objetos.Cajero"%>
+<%@page import="Objetos.*"%>
+
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="Resources/INFO/css/Profile-Edit-Form.css">
         <link rel="stylesheet" href="Resources/INFO/css/styles.css">
     </head>
+    <script src="../Resources/p1.js"></script>
     <script src="../Resources/INFO/js/jquery.min.js"></script>
     <script src="../Resources/INFO/js/bootstrap.min.js"></script>
     <script src="../Resources/INFO/js/bs-init.js"></script>
@@ -109,11 +110,12 @@
                                             <h6 align="left" >Tipo usuario : &nbsp;&nbsp;</h6>
                                             <input class="form-check-input" type="radio" name="identidad" required="" id="inlineRadio1" value="cliente">
                                             <label class="form-check-label" for="inlineRadio1">Cliente</label>
+                                        
+                                        </div>
                                         <div class="form-check form-check-inline">
                                             &nbsp;&nbsp;
                                             <input class="form-check-input" type="radio" name="identidad" required="" id="inlineRadio2" value="cajero">
                                             <label class="form-check-label" for="inlineRadio2">Cajero</label>
-                                        </div>
                                         </div>
                                         
                                     </div>
@@ -147,7 +149,9 @@
     <%
         } 
         else if (cambiosss != null){%>
+    
         <%@ include file = "../PagesGerente/ListaCliente_1.jsp" %>
+        
         <% }%>
 
 

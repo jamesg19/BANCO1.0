@@ -158,7 +158,46 @@ public class GestorActualizarUsuario {
             e.printStackTrace();
             return false;
         }
-    }    
+    } 
+    
+    
+    public boolean Actualizar_ClienteC(String codigo, String nombre, 
+        String cumple, String dpi, String direccion,String sexo, String password, InputStream archivoPDF) {
+            
+        int resultUpdate = 0;
+        conn = ConectaBD.abrir();
+            
+        String query = "UPDATE cliente SET nombre = ?, dpi = ?, cumple = ?, direccion = ? , sexo = ?,pathdpi = ?, password = ? WHERE codigo = ?";
+
+        try (PreparedStatement preSt = conn.prepareStatement(query)) {
+
+            preSt.setString(1, nombre);
+            preSt.setString(2, dpi);
+            preSt.setString(3, cumple);
+            preSt.setString(4, direccion);
+            preSt.setString(5, sexo);
+            preSt.setBlob(6, archivoPDF);
+            preSt.setString(7, password);
+            preSt.setString(8, codigo);
+                  
+            resultUpdate = preSt.executeUpdate();
+
+            if (resultUpdate != 0) {
+                ConectaBD.cerrar();
+                return true;
+            } else {
+                ConectaBD.cerrar();
+                return false;
+            }
+        } catch (SQLException e) {
+            
+            System.out.println("Error en la base de datos.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
     
     public Gerente InfoPersonalGerente(String codigo) {
         try {
